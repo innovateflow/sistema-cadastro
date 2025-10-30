@@ -9,9 +9,9 @@
 <script setup>
 // Configuração da página
 useHead({
-  title: 'Sistema de Cadastro - Página Inicial',
+  title: 'Novo Cadastro - Sistema de Cadastro',
   meta: [
-    { name: 'description', content: 'Sistema SaaS de cadastro moderno e eficiente para sua empresa' }
+    { name: 'description', content: 'Página para criar novos cadastros no sistema' }
   ]
 })
 </script>
