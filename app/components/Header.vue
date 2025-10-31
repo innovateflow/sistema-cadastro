@@ -28,6 +28,13 @@
           >
             Novo Cadastro
           </NuxtLink>
+          <NuxtLink 
+            to="/login" 
+            class="text-text-secondary hover:text-text-primary transition-colors duration-200 font-medium"
+            active-class="text-primary-300 font-semibold"
+          >
+            Login
+          </NuxtLink>
         </nav>
 
         <!-- Mobile Menu Button -->
@@ -62,6 +69,14 @@
             active-class="text-primary-300 font-semibold"
           >
             Novo Cadastro
+          </NuxtLink>
+          <NuxtLink 
+            to="/login" 
+            @click="closeMobileMenu"
+            class="text-text-secondary hover:text-text-primary transition-colors duration-200 font-medium"
+            active-class="text-primary-300 font-semibold"
+          >
+            Login
           </NuxtLink>
         </nav>
       </div>
