@@ -7,6 +7,11 @@
 </template>
 
 <script setup>
+// Proteger a página com middleware de autenticação
+definePageMeta({
+  middleware: 'auth'
+})
+
 // Configuração da página
 useHead({
   title: 'Novo Cadastro - Tarini Cadastro',

@@ -108,6 +108,17 @@ export const useAuth = () => {
     }
   }
   
+  // Função para verificar autenticação sem estado reativo (para middlewares)
+  const isUserAuthenticated = async (): Promise<boolean> => {
+    try {
+      const { data: { session } } = await $supabase.auth.getSession()
+      return !!session?.user
+    } catch (error) {
+      console.error('Erro ao verificar autenticação:', error)
+      return false
+    }
+  }
+  
   // Computed para verificar se está logado
   const isAuthenticated = computed(() => !!user.value)
   
@@ -134,6 +145,7 @@ export const useAuth = () => {
     // Métodos
     login,
     logout,
-    checkAuth
+    checkAuth,
+    isUserAuthenticated
   }
 }

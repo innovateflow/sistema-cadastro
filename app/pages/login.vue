@@ -5,9 +5,10 @@
 </template>
 
 <script setup>
-// Desabilitar layout padrão (sem header/footer)
+// Desabilitar layout padrão (sem header/footer) e aplicar middleware guest
 definePageMeta({
-  layout: false
+  layout: false,
+  middleware: 'guest'
 })
 
 // Configuração da página
