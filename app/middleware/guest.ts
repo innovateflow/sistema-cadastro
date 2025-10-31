@@ -1,18 +1,14 @@
 // Middleware para redirecionar usuários já autenticados
-// @ts-ignore - Tipos do Nuxt são injetados em tempo de execução
 export default defineNuxtRouteMiddleware(async () => {
   // Só executar no lado do cliente
-  // @ts-ignore
   if (process.client) {
-    // @ts-ignore
-    const { $supabase } = useNuxtApp()
+    const { isUserAuthenticated } = useAuth()
     
     try {
-      const { data: { session } } = await $supabase.auth.getSession()
+      const isAuthenticated = await isUserAuthenticated()
       
-      // Se há sessão, redirecionar para a página inicial
-      if (session?.user) {
-        // @ts-ignore
+      // Se está autenticado, redirecionar para a página inicial
+      if (isAuthenticated) {
         return navigateTo('/')
       }
     } catch (error) {
