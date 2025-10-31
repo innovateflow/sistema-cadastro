@@ -28,26 +28,7 @@
           >
             Novo Cadastro
           </NuxtLink>
-          <NuxtLink 
-            to="#" 
-            class="text-text-secondary hover:text-text-primary transition-colors duration-200 font-medium"
-          >
-            Listar
-          </NuxtLink>
-          <NuxtLink 
-            to="#" 
-            class="text-text-secondary hover:text-text-primary transition-colors duration-200 font-medium"
-          >
-            Relatórios
-          </NuxtLink>
         </nav>
-
-        <!-- CTA Button -->
-        <div class="hidden md:block">
-          <Button variant="primary" size="sm" @click="handleCTA">
-            Acessar Sistema
-          </Button>
-        </div>
 
         <!-- Mobile Menu Button -->
         <button 
@@ -82,25 +63,6 @@
           >
             Novo Cadastro
           </NuxtLink>
-          <NuxtLink 
-            to="#" 
-            @click="closeMobileMenu"
-            class="text-text-secondary hover:text-text-primary transition-colors duration-200 font-medium"
-          >
-            Listar
-          </NuxtLink>
-          <NuxtLink 
-            to="#" 
-            @click="closeMobileMenu"
-            class="text-text-secondary hover:text-text-primary transition-colors duration-200 font-medium"
-          >
-            Relatórios
-          </NuxtLink>
-          <div class="pt-2">
-            <Button variant="primary" size="sm" full-width @click="handleCTA">
-              Acessar Sistema
-            </Button>
-          </div>
         </nav>
       </div>
     </div>
@@ -121,11 +83,7 @@ const closeMobileMenu = () => {
   mobileMenuOpen.value = false
 }
 
-// Função para o botão CTA
-const handleCTA = () => {
-  // Implementar lógica do sistema
-  console.log('Acessar sistema')
-}
+
 
 // Fechar menu mobile ao redimensionar tela
 onMounted(() => {
