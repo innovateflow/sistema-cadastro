@@ -120,15 +120,24 @@
         </label>
       </div>
 
+      <!-- Mensagens de erro e sucesso para registro -->
+      <div v-if="registerError" class="text-sm text-red-600 bg-red-50 p-3 rounded-lg border border-red-200">
+        ❌ {{ registerError }}
+      </div>
+      
+      <div v-if="registerSuccess && registerMessage" class="text-sm text-green-600 bg-green-50 p-3 rounded-lg border border-green-200">
+        ✅ {{ registerMessage }}
+      </div>
+
       <Button
         type="submit"
         variant="primary"
         size="lg"
         :full-width="true"
-        :disabled="!registerForm.acceptTerms"
+        :disabled="!registerForm.acceptTerms || loading"
         class="mt-6"
       >
-        Criar Minha Conta
+        {{ loading ? 'Criando Conta...' : 'Criar Minha Conta' }}
       </Button>
     </form>
   </div>
@@ -136,15 +145,20 @@
 
 <script setup lang="ts">
 // Composables
-const { login, loading, error } = useAuth()
+const { login, register, loading, error } = useAuth()
 const router = useRouter()
 
 // Estado das abas
 const activeTab = ref<'login' | 'register'>('login')
 
-// Estado para feedback
+// Estado para feedback do login
 const loginError = ref<string | null>(null)
 const loginSuccess = ref(false)
+
+// Estado para feedback do registro
+const registerError = ref<string | null>(null)
+const registerSuccess = ref(false)
+const registerMessage = ref<string | null>(null)
 
 // Formulário de login
 const loginForm = reactive({
@@ -199,9 +213,75 @@ const handleLogin = async () => {
 }
 
 // Função para lidar com registro
-const handleRegister = () => {
-  console.log('Register:', registerForm)
-  // Implementar lógica de registro futuramente
+const handleRegister = async () => {
+  // Limpar erros e mensagens anteriores
+  registerError.value = null
+  registerSuccess.value = false
+  registerMessage.value = null
+  
+  // Validações básicas
+  if (!registerForm.email || !registerForm.password || !registerForm.confirmPassword) {
+    registerError.value = 'Por favor, preencha todos os campos'
+    return
+  }
+  
+  if (!isValidEmail(registerForm.email)) {
+    registerError.value = 'Por favor, insira um email válido'
+    return
+  }
+  
+  if (registerForm.password !== registerForm.confirmPassword) {
+    registerError.value = 'As senhas não coincidem'
+    return
+  }
+  
+  if (registerForm.password.length < 6) {
+    registerError.value = 'A senha deve ter pelo menos 6 caracteres'
+    return
+  }
+  
+  if (!registerForm.acceptTerms) {
+    registerError.value = 'Você deve aceitar os termos e condições'
+    return
+  }
+  
+  try {
+    const result = await register({
+      email: registerForm.email,
+      password: registerForm.password,
+      confirmPassword: registerForm.confirmPassword
+    })
+    
+    if (result.success) {
+      registerSuccess.value = true
+      registerMessage.value = result.message || 'Conta criada com sucesso!'
+      
+      // Se o usuário foi logado automaticamente, redirecionar
+      if (result.message?.includes('Conta criada com sucesso!')) {
+        setTimeout(() => {
+          router.push('/')
+        }, 2000)
+      }
+      // Se precisa confirmar email, mostrar mensagem e resetar form
+      else {
+        setTimeout(() => {
+          // Resetar formulário
+          registerForm.email = ''
+          registerForm.password = ''
+          registerForm.confirmPassword = ''
+          registerForm.acceptTerms = false
+          registerSuccess.value = false
+          registerMessage.value = null
+          // Voltar para aba de login
+          activeTab.value = 'login'
+        }, 4000)
+      }
+    } else {
+      registerError.value = result.error || 'Erro ao criar conta'
+    }
+  } catch (err) {
+    registerError.value = 'Erro inesperado. Tente novamente.'
+  }
 }
 
 // Função para validar email

@@ -5,6 +5,12 @@ interface LoginCredentials {
   password: string
 }
 
+interface RegisterCredentials {
+  email: string
+  password: string
+  confirmPassword: string
+}
+
 interface AuthState {
   user: User | null
   loading: boolean
@@ -41,6 +47,62 @@ export const useAuth = () => {
       }
       
       return { success: false, error: 'Login falhou' }
+      
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Erro desconhecido'
+      error.value = message
+      return { success: false, error: message }
+    } finally {
+      loading.value = false
+    }
+  }
+  
+  // Função de registro
+  const register = async (credentials: RegisterCredentials) => {
+    try {
+      loading.value = true
+      error.value = null
+      
+      // Validar se as senhas coincidem
+      if (credentials.password !== credentials.confirmPassword) {
+        error.value = 'As senhas não coincidem'
+        return { success: false, error: error.value }
+      }
+      
+      // Validar força da senha
+      if (credentials.password.length < 6) {
+        error.value = 'A senha deve ter pelo menos 6 caracteres'
+        return { success: false, error: error.value }
+      }
+      
+      const { data, error: authError } = await $supabase.auth.signUp({
+        email: credentials.email,
+        password: credentials.password
+      })
+      
+      if (authError) {
+        error.value = getErrorMessage(authError)
+        return { success: false, error: error.value }
+      }
+      
+      if (data.user) {
+        // Se o usuário foi criado mas precisa confirmar email
+        if (data.user && !data.session) {
+          return { 
+            success: true, 
+            user: data.user, 
+            message: 'Conta criada! Verifique seu email para confirmar a conta.' 
+          }
+        }
+        
+        // Se o usuário foi criado e já está logado
+        if (data.user && data.session) {
+          user.value = data.user
+          return { success: true, user: data.user, message: 'Conta criada com sucesso!' }
+        }
+      }
+      
+      return { success: false, error: 'Erro ao criar conta' }
       
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Erro desconhecido'
@@ -103,6 +165,14 @@ export const useAuth = () => {
         return 'Email ainda não confirmado'
       case 'Too many requests':
         return 'Muitas tentativas. Tente novamente mais tarde'
+      case 'User already registered':
+        return 'Este email já está cadastrado'
+      case 'Password should be at least 6 characters':
+        return 'A senha deve ter pelo menos 6 caracteres'
+      case 'Invalid email':
+        return 'Email inválido'
+      case 'Signup is disabled':
+        return 'Cadastro de novos usuários está desabilitado'
       default:
         return authError.message || 'Erro na autenticação'
     }
@@ -144,6 +214,7 @@ export const useAuth = () => {
     
     // Métodos
     login,
+    register,
     logout,
     checkAuth,
     isUserAuthenticated
