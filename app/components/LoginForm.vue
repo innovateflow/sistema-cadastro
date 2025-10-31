@@ -53,6 +53,15 @@
         :required="true"
       />
 
+      <!-- Mensagens de feedback -->
+      <div v-if="loginError" class="text-sm text-error bg-error/10 p-3 rounded-lg border border-error/20">
+        {{ loginError }}
+      </div>
+      
+      <div v-if="loginSuccess" class="text-sm text-green-600 bg-green-50 p-3 rounded-lg border border-green-200">
+        ✅ Login realizado com sucesso! Redirecionando...
+      </div>
+
       <div class="text-right">
         <a href="#" class="text-sm text-primary-300 hover:text-primary-400 transition-colors duration-200">
           Esqueceu a senha?
@@ -64,9 +73,10 @@
         variant="primary"
         size="lg"
         :full-width="true"
+        :disabled="loading"
         class="mt-6"
       >
-        Entrar
+        {{ loading ? 'Entrando...' : 'Entrar' }}
       </Button>
     </form>
 
@@ -125,8 +135,16 @@
 </template>
 
 <script setup lang="ts">
+// Composables
+const { login, loading, error } = useAuth()
+const router = useRouter()
+
 // Estado das abas
 const activeTab = ref<'login' | 'register'>('login')
+
+// Estado para feedback
+const loginError = ref<string | null>(null)
+const loginSuccess = ref(false)
 
 // Formulário de login
 const loginForm = reactive({
@@ -143,15 +161,53 @@ const registerForm = reactive({
 })
 
 // Função para lidar com login
-const handleLogin = () => {
-  console.log('Login:', loginForm)
-  // Implementar lógica de login
+const handleLogin = async () => {
+  // Limpar erros anteriores
+  loginError.value = null
+  loginSuccess.value = false
+  
+  // Validações básicas
+  if (!loginForm.email || !loginForm.password) {
+    loginError.value = 'Por favor, preencha todos os campos'
+    return
+  }
+  
+  if (!isValidEmail(loginForm.email)) {
+    loginError.value = 'Por favor, insira um email válido'
+    return
+  }
+  
+  try {
+    const result = await login({
+      email: loginForm.email,
+      password: loginForm.password
+    })
+    
+    if (result.success) {
+      loginSuccess.value = true
+      
+      // Redirecionar após login bem-sucedido
+      setTimeout(() => {
+        router.push('/')
+      }, 1000)
+    } else {
+      loginError.value = result.error || 'Erro ao fazer login'
+    }
+  } catch (err) {
+    loginError.value = 'Erro inesperado. Tente novamente.'
+  }
 }
 
 // Função para lidar com registro
 const handleRegister = () => {
   console.log('Register:', registerForm)
-  // Implementar lógica de registro
+  // Implementar lógica de registro futuramente
+}
+
+// Função para validar email
+const isValidEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return emailRegex.test(email)
 }
 
 // Interface para props (se necessário no futuro)
