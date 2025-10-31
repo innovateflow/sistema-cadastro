@@ -6,9 +6,9 @@
         <div class="flex items-center">
           <NuxtLink 
             to="/" 
-            class="text-2xl font-bold text-text-primary hover:text-primary-300 transition-colors duration-200"
+            class="text-2xl font-bold text-text-primary"
           >
-            Sistema de <span class="text-primary-300">Cadastro</span>
+            Tarini <span class="text-primary-300">Cadastro</span>
           </NuxtLink>
         </div>
         

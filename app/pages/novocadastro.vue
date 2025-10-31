@@ -9,7 +9,7 @@
 <script setup>
 // Configuração da página
 useHead({
-  title: 'Novo Cadastro - Sistema de Cadastro',
+  title: 'Novo Cadastro - Tarini Cadastro',
   meta: [
     { name: 'description', content: 'Página para criar novos cadastros no sistema' }
   ]

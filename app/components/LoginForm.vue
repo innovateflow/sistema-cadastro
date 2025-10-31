@@ -3,7 +3,7 @@
     <!-- Logo/Título -->
     <div class="text-center mb-8">
       <h1 class="text-3xl font-bold text-text-primary mb-2">
-        Sistema de <span class="text-primary-300">Cadastro</span>
+        Tarini <span class="text-primary-300">Cadastro</span>
       </h1>
       <p class="text-text-secondary">
         {{ activeTab === 'login' ? 'Entre com suas credenciais de acesso' : 'Crie suas credenciais de acesso' }}
@@ -42,13 +42,12 @@
         v-model="loginForm.email"
         type="email"
         label="E-mail"
-        placeholder="exemplo@outlook.com"
+        placeholder="exemplo@gmail.com"
         :required="true"
       />
       
-      <Input
+      <PasswordInput
         v-model="loginForm.password"
-        type="password"
         label="Senha"
         placeholder="••••••••"
         :required="true"
@@ -77,21 +76,19 @@
         v-model="registerForm.email"
         type="email"
         label="E-mail"
-        placeholder="johnsnow@example.com"
+        placeholder="exemplo@gmail.com"
         :required="true"
       />
       
-      <Input
+      <PasswordInput
         v-model="registerForm.password"
-        type="password"
         label="Senha"
         placeholder="Insira sua senha"
         :required="true"
       />
       
-      <Input
+      <PasswordInput
         v-model="registerForm.confirmPassword"
-        type="password"
         label="Confirmação de senha"
         placeholder="Repita sua senha"
         :required="true"

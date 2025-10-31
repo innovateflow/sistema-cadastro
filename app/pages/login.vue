@@ -1,15 +1,20 @@
 <template>
-  <div class="min-h-[80vh] bg-background-secondary flex items-center justify-center p-4">
+  <div class="min-h-screen bg-background-secondary flex items-center justify-center p-4">
     <LoginForm />
   </div>
 </template>
 
 <script setup>
+// Desabilitar layout padrão (sem header/footer)
+definePageMeta({
+  layout: false
+})
+
 // Configuração da página
 useHead({
-  title: 'Login - Sistema de Cadastro',
+  title: 'Login - Tarini Cadastro',
   meta: [
-    { name: 'description', content: 'Faça login ou registre-se no Sistema de Cadastro' }
+    { name: 'description', content: 'Faça login ou registre-se no Tarini Cadastro' }
   ]
 })
 </script>

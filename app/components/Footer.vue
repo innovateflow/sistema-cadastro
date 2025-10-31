@@ -4,8 +4,8 @@
       <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
         <!-- Coluna 1: Sobre -->
         <div class="space-y-4">
-          <h3 class="text-lg font-semibold text-primary-300">
-            Sistema de Cadastro
+          <h3 class="text-lg font-semibold text-text-primary mb-4">
+            Tarini Cadastro
           </h3>
           <p class="text-secondary-300 text-sm leading-relaxed">
             Solução completa para gerenciamento de cadastros e dados. 
