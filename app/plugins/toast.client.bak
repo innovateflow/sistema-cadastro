@@ -1,0 +1,54 @@
+import { createApp } from 'vue'
+import Toast, { POSITION, TYPE } from 'vue-toastification'
+
+export default defineNuxtPlugin((nuxtApp) => {
+  // Configurações do toast com as cores do sistema
+  const options = {
+    position: POSITION.TOP_RIGHT,
+    timeout: 5000,
+    closeOnClick: true,
+    pauseOnFocusLoss: true,
+    pauseOnHover: true,
+    draggable: true,
+    draggablePercent: 0.6,
+    showCloseButtonOnHover: false,
+    hideProgressBar: false,
+    closeButton: "button",
+    icon: true,
+    rtl: false,
+    transition: "Vue-Toastification__bounce",
+    maxToasts: 5,
+    newestOnTop: true,
+    
+    // Customização com as cores do sistema
+    toastDefaults: {
+      // Toast de sucesso - usando primary (laranja)
+      [TYPE.SUCCESS]: {
+        toastClassName: "toast-success-custom",
+        bodyClassName: ["toast-body", "text-white"],
+        progressClassName: "toast-progress-success"
+      },
+      // Toast de erro - usando cores de erro
+      [TYPE.ERROR]: {
+        toastClassName: "toast-error-custom",
+        bodyClassName: ["toast-body", "text-white"],
+        progressClassName: "toast-progress-error"
+      },
+      // Toast de aviso - usando secondary (cinza)
+      [TYPE.WARNING]: {
+        toastClassName: "toast-warning-custom", 
+        bodyClassName: ["toast-body", "text-gray-900"],
+        progressClassName: "toast-progress-warning"
+      },
+      // Toast de info - usando primary claro
+      [TYPE.INFO]: {
+        toastClassName: "toast-info-custom",
+        bodyClassName: ["toast-body", "text-white"],
+        progressClassName: "toast-progress-info"
+      }
+    }
+  }
+
+  // Registrar o plugin
+  nuxtApp.vueApp.use(Toast, options)
+})

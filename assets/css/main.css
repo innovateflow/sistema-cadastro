@@ -1,3 +1,82 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Estilos customizados para Toast usando as cores do sistema */
+
+/* Toast de Sucesso - Primary (Laranja) */
+.toast-success-custom {
+  @apply bg-primary-600 border-l-4 border-primary-500 shadow-lg;
+}
+
+.toast-progress-success {
+  @apply bg-primary-400;
+}
+
+/* Toast de Erro - Vermelho */
+.toast-error-custom {
+  @apply bg-red-600 border-l-4 border-red-500 shadow-lg;
+}
+
+.toast-progress-error {
+  @apply bg-red-400;
+}
+
+/* Toast de Aviso - Amarelo */
+.toast-warning-custom {
+  @apply bg-yellow-400 border-l-4 border-yellow-500 shadow-lg;
+}
+
+.toast-progress-warning {
+  @apply bg-yellow-300;
+}
+
+/* Toast de Info - Azul */
+.toast-info-custom {
+  @apply bg-blue-600 border-l-4 border-blue-500 shadow-lg;
+}
+
+.toast-progress-info {
+  @apply bg-blue-400;
+}
+
+/* Container do Toast */
+.Vue-Toastification__container {
+  z-index: 9999 !important;
+  position: fixed !important;
+}
+
+/* Estilos gerais do Toast */
+.Vue-Toastification__toast {
+  @apply rounded-lg shadow-xl border-0 min-h-16;
+  z-index: 10000 !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.Vue-Toastification__toast-body {
+  @apply font-medium text-sm;
+  color: white !important;
+}
+
+.Vue-Toastification__close-button {
+  @apply text-white hover:text-gray-200 transition-colors;
+}
+
+.Vue-Toastification__progress-bar {
+  @apply h-1;
+}
+
+.Vue-Toastification__icon {
+  @apply text-white;
+  color: white !important;
+}
+
+/* Garantir visibilidade */
+.Vue-Toastification__toast--success,
+.Vue-Toastification__toast--error,
+.Vue-Toastification__toast--warning,
+.Vue-Toastification__toast--info {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}

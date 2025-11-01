@@ -5,6 +5,15 @@ export const useSupabaseDebug = () => {
     try {
       console.log('🔄 Testando conexão com Supabase...')
       
+      // Verificar configurações
+      const config = useRuntimeConfig()
+      console.log('⚙️ Configurações do runtime:', {
+        supabaseUrl: config.public.supabaseUrl ? 'Configurado ✅' : 'Não configurado ❌',
+        supabaseKey: config.public.supabaseKey ? 'Configurado ✅' : 'Não configurado ❌'
+      })
+      
+      console.log('🔗 Supabase client:', $supabase)
+      
       // Teste básico de conexão
       const { data, error } = await $supabase
         .from('funcionarios')
@@ -12,6 +21,12 @@ export const useSupabaseDebug = () => {
       
       if (error) {
         console.error('❌ Erro na conexão:', error)
+        console.error('❌ Detalhes completos do erro:', {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code
+        })
         return { success: false, error: error.message }
       }
       

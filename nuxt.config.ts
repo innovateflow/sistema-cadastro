@@ -6,6 +6,9 @@ export default defineNuxtConfig({
   modules: [
     '@nuxtjs/tailwindcss'
   ],
+  css: [
+    'vue-toastification/dist/index.css'
+  ],
   runtimeConfig: {
     public: {
       supabaseUrl: process.env.SUPABASE_URL,
