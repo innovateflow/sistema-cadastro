@@ -5,10 +5,10 @@
       <div class="flex items-center justify-between">
         <div>
           <h2 class="text-lg font-semibold text-gray-900">
-            Cadastrar Novo Funcionário
+            Editar Funcionário
           </h2>
           <p class="text-sm text-gray-600 mt-1">
-            Preencha os dados do novo funcionário
+            Altere as informações do funcionário
           </p>
         </div>
         <div class="text-sm text-gray-500">
@@ -16,7 +16,7 @@
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
-            Dados do Funcionário
+            ID: {{ funcionario.id }}
           </span>
         </div>
       </div>
@@ -24,7 +24,6 @@
 
     <!-- Conteúdo do formulário -->
     <div class="p-6">
-
       <!-- Formulário -->
       <form @submit.prevent="handleSubmit" class="space-y-6">
         <!-- Grid de campos principais -->
@@ -49,17 +48,16 @@
             <DropDown
               v-model="form.cargo"
               :options="cargosDisponiveis"
-              label="Cargo"
-              id="cargo"
+              label="Cargo *"
               placeholder="Selecione o cargo"
-              :required="true"
+              required
             />
           </div>
         </div>
 
-        <!-- Segunda linha do grid -->
+        <!-- Grid secundário -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- Email -->
+          <!-- E-mail -->
           <div>
             <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
               E-mail
@@ -69,7 +67,7 @@
               v-model="form.email"
               type="email"
               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
-              placeholder="exemplo@empresa.com"
+              placeholder="exemplo@email.com"
             />
           </div>
 
@@ -96,60 +94,62 @@
           </div>
         </div>
 
-        <!-- Endereço - Campo largo -->
+        <!-- Endereço -->
         <div>
           <label for="endereco" class="block text-sm font-medium text-gray-700 mb-2">
-            Endereço
+            Endereço Completo
           </label>
           <textarea
             id="endereco"
             v-model="form.endereco"
             rows="3"
             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors resize-none"
-            placeholder="Digite o endereço completo"
+            placeholder="Rua, número, bairro, cidade - CEP"
           ></textarea>
         </div>
 
-      <!-- Botões de ação -->
-      <div class="flex items-center justify-end space-x-4 pt-4 border-t border-gray-200">
-        <button
-          type="button"
-          @click="handleLimpar"
-          class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
-        >
-          Limpar
-        </button>
-        
-        <button
-          type="submit"
-          :disabled="loading"
-          class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-primary-600 border border-transparent rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        >
-          <svg v-if="loading" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-          Salvar
-        </button>
-      </div>
+        <!-- Botões de ação -->
+        <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200">
+          <button
+            type="submit"
+            :disabled="loading"
+            class="flex-1 sm:flex-none inline-flex items-center justify-center px-6 py-3 bg-primary-600 text-white text-sm font-medium rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            <svg v-if="loading" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            {{ loading ? 'Salvando...' : 'Salvar Alterações' }}
+          </button>
+
+          <button
+            type="button"
+            @click="handleCancelar"
+            :disabled="loading"
+            class="flex-1 sm:flex-none inline-flex items-center justify-center px-6 py-3 bg-white text-gray-700 text-sm font-medium border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            Cancelar
+          </button>
+        </div>
       </form>
     </div>
   </div>
 </template>
 
-<script setup lang="ts">
-interface FuncionarioForm {
-  nome: string
-  cargo: string
-  email: string | null
-  endereco: string | null
-  salario: number | null
-}
+<script setup>
+// Props
+const props = defineProps({
+  funcionario: {
+    type: Object,
+    required: true
+  }
+})
 
-// Não precisa mais de props, sempre é novo cadastro
+// Emits
+const emit = defineEmits(['funcionario-editado', 'cancelar'])
 
 // Estado do formulário
-const form = ref<FuncionarioForm>({
+const form = ref({
   nome: '',
   cargo: '',
   email: null,
@@ -174,8 +174,21 @@ const cargosDisponiveis = [
 ]
 
 // Composables
-const { adicionarFuncionario } = useFuncionarios()
 const { notifications } = useNotification()
+const { atualizarFuncionario } = useFuncionarios()
+
+// Preencher formulário com dados do funcionário
+watchEffect(() => {
+  if (props.funcionario) {
+    form.value = {
+      nome: props.funcionario.nome || '',
+      cargo: props.funcionario.cargo || '',
+      email: props.funcionario.email || null,
+      endereco: props.funcionario.endereco || null,
+      salario: props.funcionario.salario || null
+    }
+  }
+})
 
 // Função para lidar com o submit
 const handleSubmit = async () => {
@@ -199,7 +212,7 @@ const handleSubmit = async () => {
     }
 
     // Preparar dados para envio
-    const funcionarioData = {
+    const dadosAtualizados = {
       nome: form.value.nome.trim(),
       cargo: form.value.cargo.trim(),
       email: form.value.email?.trim() || null,
@@ -207,38 +220,50 @@ const handleSubmit = async () => {
       salario: parseFloat(form.value.salario.toString())
     }
     
-    // Cadastrar novo funcionário
-    const resultado = await adicionarFuncionario(funcionarioData)
+    // Atualizar funcionário no Supabase
+    const resultado = await atualizarFuncionario(props.funcionario.id, dadosAtualizados)
     
     if (resultado.success) {
-      notifications.funcionario.cadastrado()
-      // Limpar formulário após cadastro
-      resetForm()
+      notifications.funcionario.atualizado()
+      
+      // Preparar dados completos para emitir
+      const funcionarioEditado = {
+        id: props.funcionario.id,
+        ...dadosAtualizados
+      }
+      
+      // Emitir evento de funcionário editado
+      emit('funcionario-editado', funcionarioEditado)
     } else {
-      notifications.funcionario.erroCadastrar()
+      notifications.funcionario.erroAtualizar()
     }
     
   } catch (error) {
-    console.error('Erro ao processar funcionário:', error)
-    notifications.funcionario.erroCadastrar()
+    console.error('Erro ao editar funcionário:', error)
+    notifications.funcionario.erroAtualizar()
   } finally {
     loading.value = false
   }
 }
 
-// Função para limpar o formulário
-const handleLimpar = () => {
-  resetForm()
-}
-
-// Função para resetar o formulário
-const resetForm = () => {
-  form.value = {
-    nome: '',
-    cargo: '',
-    email: null,
-    endereco: null,
-    salario: null
-  }
+// Função para cancelar
+const handleCancelar = () => {
+  emit('cancelar')
 }
 </script>
+
+<style scoped>
+/* Animação de loading */
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+</style>

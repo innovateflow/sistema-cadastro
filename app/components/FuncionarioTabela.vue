@@ -76,6 +76,9 @@
             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               E-mail
             </th>
+            <th scope="col" class="relative px-6 py-3">
+              <span class="sr-only">Ações</span>
+            </th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
@@ -105,16 +108,22 @@
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
               <div v-if="funcionario.email" class="text-sm text-gray-900">
-                <a 
-                  :href="`mailto:${funcionario.email}`"
-                  class="text-blue-600 hover:text-blue-800 hover:underline"
-                >
-                  {{ funcionario.email }}
-                </a>
+                {{ funcionario.email }}
               </div>
               <div v-else class="text-sm text-gray-400 italic">
                 Email não informado
               </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+              <NuxtLink
+                :to="`/funcionario/${funcionario.id}`"
+                class="inline-flex items-center px-3 py-2 text-sm font-medium text-primary-600 bg-primary-50 border border-primary-200 rounded-md hover:bg-primary-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
+              >
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                </svg>
+                Editar
+              </NuxtLink>
             </td>
           </tr>
         </tbody>

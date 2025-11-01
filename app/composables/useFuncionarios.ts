@@ -50,6 +50,44 @@ export const useFuncionarios = () => {
     }
   }
 
+  // Função para buscar funcionário por ID (otimizada)
+  const buscarFuncionarioPorId = (id: number) => {
+    // Primeiro tenta encontrar nos dados já carregados
+    const funcionarioExistente = funcionarios.value.find(f => f.id === id)
+    if (funcionarioExistente) {
+      return funcionarioExistente
+    }
+
+    // Se não encontrar, faz busca no Supabase
+    return buscarFuncionarioDoSupabase(id)
+  }
+
+  // Função auxiliar para buscar no Supabase
+  const buscarFuncionarioDoSupabase = async (id: number) => {
+    try {
+      loading.value = true
+      error.value = null
+
+      const { data, error: fetchError } = await $supabase
+        .from('funcionarios')
+        .select('id, nome, cargo, email, endereco, salario, created_at')
+        .eq('id', id)
+        .single()
+
+      if (fetchError) {
+        console.error('Erro ao buscar funcionário no Supabase:', fetchError)
+        return null
+      }
+
+      return data
+    } catch (err) {
+      console.error('Erro inesperado ao buscar funcionário:', err)
+      return null
+    } finally {
+      loading.value = false
+    }
+  }
+
   // Função para adicionar um novo funcionário
   const adicionarFuncionario = async (funcionario: {
     nome: string
@@ -119,11 +157,72 @@ export const useFuncionarios = () => {
     }
   }
 
+  // Função para atualizar funcionário existente
+  const atualizarFuncionario = async (id: number, dadosAtualizados: {
+    nome: string
+    cargo: string
+    email: string | null
+    endereco: string | null
+    salario: number
+  }) => {
+    try {
+      loading.value = true
+      error.value = null
+
+      console.log('🔄 Atualizando funcionário:', { id, dados: dadosAtualizados })
+
+      // Preparar dados para atualização
+      const dadosParaAtualizar = {
+        nome: dadosAtualizados.nome.trim(),
+        cargo: dadosAtualizados.cargo.trim(),
+        endereco: dadosAtualizados.endereco?.trim() || null,
+        email: dadosAtualizados.email?.trim() || null,
+        salario: parseFloat(dadosAtualizados.salario.toString())
+      }
+
+      console.log('📝 Dados formatados para atualização:', dadosParaAtualizar)
+
+      const { data, error: updateError } = await $supabase
+        .from('funcionarios')
+        .update(dadosParaAtualizar)
+        .eq('id', id)
+        .select('id, nome, cargo, email')
+        .single()
+
+      console.log('📊 Resposta da atualização:', { data, error: updateError })
+
+      if (updateError) {
+        error.value = updateError.message
+        console.error('❌ Erro na atualização:', updateError)
+        return { success: false, error: error.value }
+      }
+
+      // Atualizar o funcionário na lista local
+      if (data) {
+        const index = funcionarios.value.findIndex(f => f.id === id)
+        if (index !== -1) {
+          funcionarios.value[index] = data as FuncionarioDisplay
+          console.log('✅ Funcionário atualizado na lista local')
+        }
+      }
+      
+      return { success: true, data }
+    } catch (err) {
+      error.value = 'Erro inesperado ao atualizar funcionário'
+      console.error('💥 Erro inesperado na atualização:', err)
+      return { success: false, error: error.value }
+    } finally {
+      loading.value = false
+    }
+  }
+
   return {
     funcionarios: readonly(funcionarios),
     loading: readonly(loading),
     error: readonly(error),
     fetchFuncionarios,
-    adicionarFuncionario
+    adicionarFuncionario,
+    buscarFuncionarioPorId,
+    atualizarFuncionario
   }
 }

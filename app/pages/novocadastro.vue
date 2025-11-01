@@ -25,7 +25,7 @@
 
 
       <!-- Componente do formulário -->
-      <FormFuncionario :is-novo="true" />
+      <FormFuncionario />
     </div>
   </div>
 </template>
@@ -43,6 +43,4 @@ useHead({
     { name: 'description', content: 'Página para cadastrar novos funcionários no sistema' }
   ]
 })
-
-
 </script>
