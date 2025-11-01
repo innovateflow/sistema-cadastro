@@ -1,0 +1,1 @@
+import{L as i,M as s,N as a}from"./71iuM9A_.js";import{u as n}from"./DHwmbQvi.js";const d=i(async()=>{let t,e;{const{isUserAuthenticated:o}=n();try{if(!([t,e]=s(()=>o()),t=await t,e(),t))return a("/login")}catch(r){return console.error("Erro ao verificar autenticação:",r),a("/login")}}});export{d as default};
