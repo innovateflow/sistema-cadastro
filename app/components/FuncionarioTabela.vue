@@ -115,20 +115,46 @@
               </div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-              <NuxtLink
-                :to="`/funcionario/${funcionario.id}`"
-                class="inline-flex items-center px-3 py-2 text-sm font-medium text-primary-600 bg-primary-50 border border-primary-200 rounded-md hover:bg-primary-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
-              >
-                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                </svg>
-                Editar
-              </NuxtLink>
+              <div class="flex items-center gap-2 justify-end">
+                <NuxtLink
+                  :to="`/funcionario/${funcionario.id}`"
+                  class="inline-flex items-center px-3 py-2 text-sm font-medium text-primary-600 bg-primary-50 border border-primary-200 rounded-md hover:bg-primary-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
+                >
+                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                  </svg>
+                  Editar
+                </NuxtLink>
+                
+                <button
+                  @click="confirmarExclusao(funcionario)"
+                  class="inline-flex items-center px-3 py-2 text-sm font-medium text-red-600 bg-red-50 border border-red-200 rounded-md hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
+                >
+                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                  </svg>
+                  Excluir
+                </button>
+              </div>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
+
+    <!-- Modal de confirmação de exclusão -->
+    <Modal
+      v-model="modalExclusao"
+      type="danger"
+      title="Confirmar Exclusão"
+      :message="`Tem certeza que deseja excluir o funcionário ${funcionarioSelecionado?.nome}? Esta ação não pode ser desfeita.`"
+      confirm-text="Excluir"
+      cancel-text="Cancelar"
+      :loading="excluindoFuncionario"
+      loading-text="Excluindo..."
+      @confirm="executarExclusao"
+      @cancel="cancelarExclusao"
+    />
   </div>
 </template>
 
@@ -136,8 +162,9 @@
 import { useFuncionarios } from '~/composables/useFuncionarios'
 import { useSupabaseDebug } from '~/composables/useSupabaseDebug'
 
-const { funcionarios, loading, error, fetchFuncionarios } = useFuncionarios()
+const { funcionarios, loading, error, fetchFuncionarios, deletarFuncionario } = useFuncionarios()
 const { testConnection, testAuth } = useSupabaseDebug()
+const { notifications } = useNotification()
 
 // Carrega os funcionários quando o componente é montado
 onMounted(async () => {
@@ -154,6 +181,11 @@ const recarregarFuncionarios = () => {
   fetchFuncionarios()
 }
 
+// Estados do modal de exclusão
+const modalExclusao = ref(false)
+const funcionarioSelecionado = ref<any>(null)
+const excluindoFuncionario = ref(false)
+
 // Função para obter as iniciais do nome
 const getInitials = (nome: string): string => {
   if (!nome) return ''
@@ -166,5 +198,41 @@ const getInitials = (nome: string): string => {
   }
   
   return (names[0]!.charAt(0) + names[names.length - 1]!.charAt(0)).toUpperCase()
+}
+
+// Função para confirmar exclusão
+const confirmarExclusao = (funcionario: any) => {
+  funcionarioSelecionado.value = funcionario
+  modalExclusao.value = true
+}
+
+// Função para executar exclusão
+const executarExclusao = async () => {
+  if (!funcionarioSelecionado.value) return
+  
+  try {
+    excluindoFuncionario.value = true
+    
+    const resultado = await deletarFuncionario(funcionarioSelecionado.value.id)
+    
+    if (resultado.success) {
+      notifications.funcionario.excluido()
+      modalExclusao.value = false
+      funcionarioSelecionado.value = null
+    } else {
+      notifications.funcionario.erroExcluir()
+    }
+  } catch (error) {
+    console.error('Erro ao excluir funcionário:', error)
+    notifications.funcionario.erroExcluir()
+  } finally {
+    excluindoFuncionario.value = false
+  }
+}
+
+// Função para cancelar exclusão
+const cancelarExclusao = () => {
+  modalExclusao.value = false
+  funcionarioSelecionado.value = null
 }
 </script>

@@ -69,9 +69,11 @@ export const useNotification = () => {
     funcionario: {
       cadastrado: () => showSuccess('Funcionário cadastrado com sucesso! 🎉'),
       atualizado: () => showSuccess('Funcionário atualizado com sucesso! ✅'),
+      excluido: () => showSuccess('Funcionário excluído com sucesso! 🗑️'),
       erroCarregar: () => showError('Erro ao carregar funcionários. Tente novamente.'),
       erroCadastrar: () => showError('Erro ao cadastrar funcionário. Verifique os dados.'),
       erroAtualizar: () => showError('Erro ao atualizar funcionário. Tente novamente.'),
+      erroExcluir: () => showError('Erro ao excluir funcionário. Tente novamente.'),
       dadosInvalidos: () => showWarning('Verifique se todos os campos obrigatórios estão preenchidos.')
     },
     

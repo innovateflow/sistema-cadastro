@@ -216,6 +216,44 @@ export const useFuncionarios = () => {
     }
   }
 
+  // Função para deletar funcionário
+  const deletarFuncionario = async (id: number) => {
+    try {
+      loading.value = true
+      error.value = null
+
+      console.log('🗑️ Deletando funcionário:', { id })
+
+      const { error: deleteError } = await $supabase
+        .from('funcionarios')
+        .delete()
+        .eq('id', id)
+
+      console.log('📊 Resposta da exclusão:', { error: deleteError })
+
+      if (deleteError) {
+        error.value = deleteError.message
+        console.error('❌ Erro na exclusão:', deleteError)
+        return { success: false, error: error.value }
+      }
+
+      // Remover funcionário da lista local
+      const index = funcionarios.value.findIndex(f => f.id === id)
+      if (index !== -1) {
+        funcionarios.value.splice(index, 1)
+        console.log('✅ Funcionário removido da lista local')
+      }
+      
+      return { success: true }
+    } catch (err) {
+      error.value = 'Erro inesperado ao deletar funcionário'
+      console.error('💥 Erro inesperado na exclusão:', err)
+      return { success: false, error: error.value }
+    } finally {
+      loading.value = false
+    }
+  }
+
   return {
     funcionarios: readonly(funcionarios),
     loading: readonly(loading),
@@ -223,6 +261,7 @@ export const useFuncionarios = () => {
     fetchFuncionarios,
     adicionarFuncionario,
     buscarFuncionarioPorId,
-    atualizarFuncionario
+    atualizarFuncionario,
+    deletarFuncionario
   }
 }
